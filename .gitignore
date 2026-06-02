@@ -1,0 +1,64 @@
+gitignore# ---- Secrets / env ----
+.env
+.env.*
+*.key
+secrets.toml
+.streamlit/secrets.toml
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# ---- Virtual environments ----
+.venv/
+venv/
+env/
+ENV/
+
+# ---- CrewAI ----
+# Crew memory / state stores (short & long term memory, kickoff outputs)
+.crewai/
+crew_memory/
+db/
+*.db
+
+# ---- Qdrant ----
+# You're on :memory: now, but if you ever switch to on-disk:
+qdrant_storage/
+*.qdrant
+
+# ---- Embedding / model caches ----
+# chonkie + potion model downloads, HF cache, etc.
+.cache/
+.huggingface/
+models/
+*.gguf
+*.safetensors
+
+# ---- Uploaded / processed docs ----
+# Don't commit user PDFs or extracted text
+uploads/
+data/
+*.pdf
+# (drop the *.pdf line if you DO want sample docs in the repo)
+
+# ---- Streamlit ----
+.streamlit/
+# keep config.toml if you want shared UI settings — see note below
+
+# ---- IDE / OS ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ---- Logs / misc ----
+*.log
+.ipynb_checkpoints/

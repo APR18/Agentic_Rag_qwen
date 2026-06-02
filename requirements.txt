@@ -1,0 +1,9 @@
+crewai
+crewai_tools
+chonkie[semantic] 
+markitdown 
+qdrant-client 
+fastembed 
+streamlit
+
+
