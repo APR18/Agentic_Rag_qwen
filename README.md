@@ -1,54 +1,144 @@
-# AgenticRag Crew
+# 🔍 Agentic RAG
 
-Welcome to the AgenticRag Crew project, powered by [crewAI](https://crewai.com). This template is designed to help you set up a multi-agent AI system with ease, leveraging the powerful and flexible framework provided by crewAI. Our goal is to enable your agents to collaborate effectively on complex tasks, maximizing their collective intelligence and capabilities.
+An **agentic Retrieval-Augmented Generation** system built with [CrewAI](https://www.crewai.com/). Instead of a single retrieval step, a small crew of agents collaborates to answer your questions: one agent retrieves the most relevant information — searching your documents first and falling back to the web when needed — and a second agent synthesizes that information into a clear, written answer.
 
-## Installation
+Runs fully locally with [Ollama](https://ollama.com/) (Qwen2.5) and a [Streamlit](https://streamlit.io/) UI.
 
-Ensure you have Python >=3.10 <3.14 installed on your system. This project uses [UV](https://docs.astral.sh/uv/) for dependency management and package handling, offering a seamless setup and execution experience.
+---
 
-First, if you haven't already, install uv:
+## ✨ Features
 
-```bash
-pip install uv
+- **Two-agent crew** — a dedicated retriever and a dedicated response synthesizer, rather than a monolithic prompt.
+- **Document-first retrieval** — semantic search over your own PDFs using a local vector store.
+- **Web-search fallback** — if the answer isn't in your documents, the retriever automatically searches the internet (via Serper).
+- **Local LLM** — powered by Qwen2.5 through Ollama; no API key needed for inference.
+- **Markdown output** — answers are written out to a `.md` file.
+- **Streamlit frontend** — upload a document, ask questions, get answers.
+
+---
+
+## 🏗️ How It Works
+
+```mermaid
+flowchart TD
+    A[User query via Streamlit] --> B[Retriever Agent]
+    B --> C{Found in document?}
+    C -- Yes --> E[Response Agent]
+    C -- No --> D[Web search via Serper]
+    D --> E[Response Agent]
+    E --> F[Synthesized answer → .md file]
+    F --> G[Displayed in Streamlit]
 ```
 
-Next, navigate to your project directory and install the dependencies:
+**The crew:**
 
-(Optional) Lock the dependencies and install them by using the CLI command:
+| Agent | Role |
+|-------|------|
+| **Retriever Agent** | Understands the query and retrieves the most relevant information. Tries the document search tool first; if nothing relevant is found, falls back to web search. |
+| **Response Agent** | Synthesizes the retrieved information into a concise, coherent answer. Replies that it couldn't find the information when retrieval comes up empty. |
+
+**The retrieval pipeline (document search tool):**
+
+1. **Extract** — [MarkItDown](https://github.com/microsoft/markitdown) converts the PDF to text.
+2. **Chunk** — [Chonkie](https://github.com/chonkie-inc/chonkie)'s `SemanticChunker` splits the text into semantically coherent chunks (using the `potion-base-32M` embedding model).
+3. **Index** — chunks are embedded and stored in an in-memory [Qdrant](https://qdrant.tech/) collection.
+4. **Retrieve** — the query is matched against the collection and the most relevant chunks are returned.
+
+---
+
+## 🧰 Tech Stack
+
+- **Orchestration:** CrewAI
+- **LLM:** Qwen2.5 (via Ollama)
+- **Vector store:** Qdrant (in-memory)
+- **Document parsing:** MarkItDown
+- **Chunking / embeddings:** Chonkie (`potion-base-32M`)
+- **Web search:** Serper
+- **Frontend:** Streamlit
+- **Package manager:** [uv](https://github.com/astral-sh/uv)
+
+---
+
+## 📦 Prerequisites
+
+- **Python 3.10+** <!-- adjust to your actual target version -->
+- **[uv](https://github.com/astral-sh/uv)** package manager
+- **[Ollama](https://ollama.com/)** installed and running
+- A **[Serper](https://serper.dev/)** API key (free tier available) for the web-search fallback
+
+---
+
+## 🚀 Installation
+
+**1. Clone the repository**
+
 ```bash
-crewai install
+git clone https://github.com/<your-username>/agentic_rag.git
+cd agentic_rag
 ```
-### Customizing
 
-**Add your `OPENAI_API_KEY` into the `.env` file**
-
-- Modify `src/agentic_rag/config/agents.yaml` to define your agents
-- Modify `src/agentic_rag/config/tasks.yaml` to define your tasks
-- Modify `src/agentic_rag/crew.py` to add your own logic, tools and specific args
-- Modify `src/agentic_rag/main.py` to add custom inputs for your agents and tasks
-
-## Running the Project
-
-To kickstart your crew of AI agents and begin task execution, run this from the root folder of your project:
+**2. Install dependencies with uv**
 
 ```bash
-$ crewai run
+uv pip install -r requirements.txt
 ```
 
-This command initializes the agentic_rag Crew, assembling the agents and assigning them tasks as defined in your configuration.
+**3. Pull the LLM in Ollama**
 
-This example, unmodified, will run the create a `report.md` file with the output of a research on LLMs in the root folder.
+```bash
+ollama pull qwen2.5:7b
+```
 
-## Understanding Your Crew
+Make sure the Ollama server is running (`ollama serve`, or just have the app open).
 
-The agentic_rag Crew is composed of multiple AI agents, each with unique roles, goals, and tools. These agents collaborate on a series of tasks, defined in `config/tasks.yaml`, leveraging their collective skills to achieve complex objectives. The `config/agents.yaml` file outlines the capabilities and configurations of each agent in your crew.
+**4. Set up your environment variables**
 
-## Support
+Create a `.env` file in the project root:
 
-For support, questions, or feedback regarding the AgenticRag Crew or crewAI.
-- Visit our [documentation](https://docs.crewai.com)
-- Reach out to us through our [GitHub repository](https://github.com/joaomdmoura/crewai)
-- [Join our Discord](https://discord.com/invite/X4JWnZnxPb)
-- [Chat with our docs](https://chatg.pt/DWjSBZn)
+```env
+SERPER_API_KEY=your_serper_api_key_here
+```
 
-Let's create wonders together with the power and simplicity of crewAI.
+---
+
+## ▶️ Usage
+
+Start the Streamlit app:
+
+```bash
+streamlit run main.py
+```
+
+Then open the local URL Streamlit prints (usually `http://localhost:8501`), upload a PDF, and start asking questions. The retriever searches your document first and falls back to the web if needed; the response agent writes the synthesized answer to a `.md` file and displays it in the UI.
+
+---
+
+## 📁 Project Structure
+
+```
+agentic_rag/
+├── main.py                  # Streamlit entry point
+├── crew.py                  # AgenticRag crew (retriever + response agents)
+├── config/
+│   ├── agents.yaml          # Agent definitions
+│   └── tasks.yaml           # Task definitions
+├── tools/
+│   └── custom_tool.py       # SearchTool: MarkItDown → Chonkie → Qdrant
+├── requirements.txt
+├── .env                     # SERPER_API_KEY (not committed)
+└── README.md
+```
+
+<!-- Verify the config/ path against where crew.py actually loads agents.yaml / tasks.yaml. -->
+
+---
+
+## 🙏 Acknowledgments
+
+This project is based on the [Agentic RAG example](https://github.com/patchy631/ai-engineering-hub/tree/main/agentic_rag) from the [AI Engineering Hub](https://github.com/patchy631/ai-engineering-hub), with modifications.
+
+---
+
+## 📄 License
+
+[MIT](LICENSE) <!-- change if you prefer a different license -->
