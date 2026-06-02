@@ -1,4 +1,4 @@
-# 🔍 Agentic RAG
+#  Agentic RAG
 
 An **agentic Retrieval-Augmented Generation** system built with [CrewAI](https://www.crewai.com/). Instead of a single retrieval step, a small crew of agents collaborates to answer your questions: one agent retrieves the most relevant information — searching your documents first and falling back to the web when needed — and a second agent synthesizes that information into a clear, written answer.
 
@@ -6,7 +6,7 @@ Runs fully locally with [Ollama](https://ollama.com/) (Qwen2.5) and a [Streamlit
 
 ---
 
-## ✨ Features
+## Features
 
 - **Two-agent crew** — a dedicated retriever and a dedicated response synthesizer, rather than a monolithic prompt.
 - **Document-first retrieval** — semantic search over your own PDFs using a local vector store.
@@ -46,7 +46,7 @@ flowchart TD
 
 ---
 
-## 🧰 Tech Stack
+## Tech Stack
 
 - **Orchestration:** CrewAI
 - **LLM:** Qwen2.5 (via Ollama)
@@ -59,7 +59,7 @@ flowchart TD
 
 ---
 
-## 📦 Prerequisites
+## Prerequisites
 
 - **Python 3.10+** <!-- adjust to your actual target version -->
 - **[uv](https://github.com/astral-sh/uv)** package manager
@@ -68,7 +68,7 @@ flowchart TD
 
 ---
 
-## 🚀 Installation
+## Installation
 
 **1. Clone the repository**
 
@@ -101,7 +101,7 @@ SERPER_API_KEY=your_serper_api_key_here
 
 ---
 
-## ▶️ Usage
+## Usage
 
 Start the Streamlit app:
 
@@ -112,27 +112,6 @@ streamlit run main.py
 Then open the local URL Streamlit prints (usually `http://localhost:8501`), upload a PDF, and start asking questions. The retriever searches your document first and falls back to the web if needed; the response agent writes the synthesized answer to a `.md` file and displays it in the UI.
 
 ---
-
-## 📁 Project Structure
-
-```
-agentic_rag/
-├── main.py                  # Streamlit entry point
-├── crew.py                  # AgenticRag crew (retriever + response agents)
-├── config/
-│   ├── agents.yaml          # Agent definitions
-│   └── tasks.yaml           # Task definitions
-├── tools/
-│   └── custom_tool.py       # SearchTool: MarkItDown → Chonkie → Qdrant
-├── requirements.txt
-├── .env                     # SERPER_API_KEY (not committed)
-└── README.md
-```
-
-<!-- Verify the config/ path against where crew.py actually loads agents.yaml / tasks.yaml. -->
-
----
-
 ## 🙏 Acknowledgments
 
 This project is based on the [Agentic RAG example](https://github.com/patchy631/ai-engineering-hub/tree/main/agentic_rag) from the [AI Engineering Hub](https://github.com/patchy631/ai-engineering-hub), with modifications.
